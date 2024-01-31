@@ -30,8 +30,6 @@ public class SodiumMixinPlugin implements IMixinConfigPlugin {
 
         this.logger.info("Loaded configuration file for " + MODNAME + ": {} options available, {} override(s) found",
                 this.config.getOptionCount(), this.config.getOptionOverrideCount());
-
-        SodiumPreLaunch.onPreLaunch();
     }
 
     @Override

@@ -18,9 +18,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.client.model.data.ModelDataManager;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -191,21 +190,5 @@ public class WorldSliceLocal implements BlockAndTintGetter {
 
     public static LevelHeightAccessor create(int bottomY, int height) {
         return LevelHeightAccessor.create(bottomY, height);
-    }
-
-    @Override
-    @org.jetbrains.annotations.Nullable
-    public BlockEntity getExistingBlockEntity(BlockPos pos) {
-        return view.getExistingBlockEntity(pos);
-    }
-
-    @Override
-    public @org.jetbrains.annotations.Nullable ModelDataManager getModelDataManager() {
-        return view.getModelDataManager();
-    }
-
-    @Override
-    public float getShade(float normalX, float normalY, float normalZ, boolean shade) {
-        return view.getShade(normalX, normalY, normalZ, shade);
     }
 }

@@ -340,13 +340,6 @@ public class SodiumWorldRenderer {
                 }
 
                 for (BlockEntity blockEntity : blockEntities) {
-                    if(!currentViewport.isBoxVisible(blockEntity.getRenderBoundingBox()))
-                        continue;
-
-                    if (blockEntity.hasCustomOutlineRendering(this.client.player)) {
-                        this.blockEntityRequestedOutline = true;
-                    }
-
                     renderBlockEntity(matrices, bufferBuilders, blockBreakingProgressions, tickDelta, immediate, x, y, z, blockEntityRenderer, blockEntity);
                 }
             }
@@ -370,13 +363,6 @@ public class SodiumWorldRenderer {
             }
 
             for (var blockEntity : blockEntities) {
-                if(!currentViewport.isBoxVisible(blockEntity.getRenderBoundingBox()))
-                    continue;
-
-                if (blockEntity.hasCustomOutlineRendering(this.client.player)) {
-                    this.blockEntityRequestedOutline = true;
-                }
-
                 renderBlockEntity(matrices, bufferBuilders, blockBreakingProgressions, tickDelta, immediate, x, y, z, blockEntityRenderer, blockEntity);
             }
         }

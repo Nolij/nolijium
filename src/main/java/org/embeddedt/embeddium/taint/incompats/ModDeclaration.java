@@ -22,9 +22,10 @@ public interface ModDeclaration {
         public Single(String modId, String friendlyName, @Nullable String versionRange) {
             this.modId = modId;
             this.friendlyName = friendlyName;
+            // TODO port
             try {
-                this.versionRange = versionRange == null ? null : VersionRange.createFromVersionSpec(versionRange);
-            } catch(InvalidVersionSpecificationException e) {
+                this.versionRange = null; //versionRange == null ? null : VersionRange.createFromVersionSpec(versionRange);
+            } catch(Exception e) {
                 throw new IllegalArgumentException(e);
             }
         }

@@ -36,7 +36,6 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeConfig;
 import org.embeddedt.embeddium.api.BlockRendererRegistry;
 
 import java.util.Arrays;
@@ -74,7 +73,8 @@ public class BlockRenderer {
 
         this.occlusionCache = new BlockOcclusionCache();
         this.useAmbientOcclusion = Minecraft.useAmbientOcclusion();
-        this.useForgeExperimentalLightingPipeline = ForgeConfig.CLIENT.experimentalForgeLightPipelineEnabled.get();
+        // TODO: Expose config option and use this as a way to unconditionally delegate to the vanilla renderer
+        this.useForgeExperimentalLightingPipeline = false; // ForgeConfig.CLIENT.experimentalForgeLightPipelineEnabled.get();
     }
 
     public void renderModel(BlockRenderContext ctx, ChunkBuildBuffers buffers) {
@@ -141,7 +141,7 @@ public class BlockRenderer {
         var random = this.random;
         random.setSeed(ctx.seed());
 
-        return ctx.model().getQuads(ctx.state(), face, random, ctx.modelData(), ctx.renderLayer());
+        return ctx.model().getQuads(ctx.state(), face, random);
     }
 
     private boolean isFaceVisible(BlockRenderContext ctx, Direction face) {
@@ -153,6 +153,8 @@ public class BlockRenderer {
 
         this.useReorienting = true;
 
+        // TODO: Check if Fabric allows disabling AO per-quad
+        /*
         // noinspection ForLoopReplaceableByForEach
         for (int i = 0, quadsSize = quads.size(); i < quadsSize; i++) {
             if (!quads.get(i).hasAmbientOcclusion()) {
@@ -164,6 +166,7 @@ public class BlockRenderer {
                 break;
             }
         }
+         */
 
         // This is a very hot allocation, iterate over it manually
         // noinspection ForLoopReplaceableByForEach
@@ -236,7 +239,7 @@ public class BlockRenderer {
     }
 
     private LightMode getLightingMode(BlockState state, BakedModel model, BlockAndTintGetter world, BlockPos pos, RenderType renderLayer) {
-        if (this.useAmbientOcclusion && model.useAmbientOcclusion(state, renderLayer) && state.getLightEmission(world, pos) == 0) {
+        if (this.useAmbientOcclusion && model.useAmbientOcclusion() && state.getLightEmission() == 0) {
             return LightMode.SMOOTH;
         } else {
             return LightMode.FLAT;
