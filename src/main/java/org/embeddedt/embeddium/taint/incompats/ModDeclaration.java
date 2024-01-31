@@ -1,11 +1,10 @@
 package org.embeddedt.embeddium.taint.incompats;
 
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.ModList;
-import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
-import org.apache.maven.artifact.versioning.VersionRange;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.Version;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 public interface ModDeclaration {
@@ -14,7 +13,7 @@ public interface ModDeclaration {
     class Single implements ModDeclaration {
         private final String modId;
         private final String friendlyName;
-        private final VersionRange versionRange;
+        private final Version versionRange;
 
         public Single(String modId, String friendlyName) {
             this(modId, friendlyName, null);
@@ -32,12 +31,13 @@ public interface ModDeclaration {
 
         @Override
         public boolean matches() {
-            Optional<? extends ModContainer> modContainerOpt = ModList.get().getModContainerById(modId);
+            Optional<? extends ModContainer> modContainerOpt = FabricLoader.getInstance().getModContainer(modId);
             //noinspection OptionalIsPresent
             if(!modContainerOpt.isPresent()) {
                 return false; // If the mod is not installed, no problem
             }
-            return this.versionRange == null || this.versionRange.containsVersion(modContainerOpt.get().getModInfo().getVersion());
+            throw new UnsupportedOperationException("TODO port");
+            //return this.versionRange == null || this.versionRange.containsVersion(modContainerOpt.get().getModInfo().getVersion());
         }
 
         @Override

@@ -19,6 +19,14 @@ group = project.maven_group
 apply from: "${rootProject.projectDir}/gradle/forge.gradle"
 apply from: "${rootProject.projectDir}/gradle/java.gradle"
 
+loom {
+    mixin {
+        defaultRefmapName = "embeddium-refmap.json"
+    }
+
+    accessWidenerPath = file("src/main/resources/sodium.accesswidener")
+}
+
 configurations {
     modIncludeImplementation
 

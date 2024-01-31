@@ -24,7 +24,6 @@ import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.client.model.data.ModelDataManager;
 import org.embeddedt.embeddium.api.ChunkMeshEvent;
 import org.embeddedt.embeddium.api.MeshAppender;
 import org.jetbrains.annotations.Nullable;
@@ -254,11 +253,6 @@ public class WorldSlice implements BlockAndTintGetter, BiomeColorView {
     }
 
     @Override
-    public float getShade(float normalX, float normalY, float normalZ, boolean shade) {
-        return this.world.getShade(normalX, normalY, normalZ, shade);
-    }
-
-    @Override
     public LevelLightEngine getLightEngine() {
         // Not thread-safe to access lighting data from off-thread, even if Minecraft allows it.
         throw new UnsupportedOperationException();
@@ -350,11 +344,6 @@ public class WorldSlice implements BlockAndTintGetter, BiomeColorView {
     @Override
     public int getColor(BiomeColorSource source, int x, int y, int z) {
         return this.biomeColors.getColor(source, x, y, z);
-    }
-
-    @Override
-    public @Nullable ModelDataManager getModelDataManager() {
-        return this.world.getModelDataManager();
     }
 
     public static int getLocalBlockIndex(int x, int y, int z) {
