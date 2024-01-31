@@ -58,8 +58,9 @@ public class ChunkMeshEvent {
     @ApiStatus.Internal
     public static List<MeshAppender> post(Level world, SectionPos origin) {
         ChunkMeshEvent event = new ChunkMeshEvent(world, origin);
-        if(true) throw new UnsupportedOperationException("TODO port");
+        return List.of();
+        // TODO port
         //MinecraftForge.EVENT_BUS.post(event);
-        return Objects.requireNonNullElse(event.meshAppenders, Collections.emptyList());
+        //return Objects.requireNonNullElse(event.meshAppenders, Collections.emptyList());
     }
 }
