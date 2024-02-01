@@ -27,6 +27,7 @@ import net.caffeinemc.mods.sodium.api.util.ColorABGR;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -57,7 +58,7 @@ public class BlockRenderer {
     private final boolean useAmbientOcclusion;
     private final boolean useForgeExperimentalLightingPipeline;
 
-    private final ForgeBlockRenderer forgeBlockRenderer = new ForgeBlockRenderer();
+    private final net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderContext indigoRenderContext = new net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderContext();
 
     private final int[] quadColors = new int[4];
 
@@ -108,7 +109,7 @@ public class BlockRenderer {
             }
         }
 
-        if(this.useForgeExperimentalLightingPipeline) {
+        if(!ctx.model().isVanillaAdapter()) {
             final PoseStack mStack;
             if(renderOffset != Vec3.ZERO) {
                 mStack = new PoseStack();
@@ -117,7 +118,7 @@ public class BlockRenderer {
                 mStack = EMPTY_STACK;
 
             sinkingVertexBuilder.reset();
-            forgeBlockRenderer.renderBlock(mode, ctx, sinkingVertexBuilder, mStack, this.random, this.occlusionCache, meshBuilder);
+            indigoRenderContext.render(ctx.localSlice(), ctx.model(), ctx.state(), ctx.pos(), mStack, sinkingVertexBuilder, true, random, ctx.seed(), OverlayTexture.NO_OVERLAY);
             sinkingVertexBuilder.flush(meshBuilder, material, ctx.origin());
             return;
         }

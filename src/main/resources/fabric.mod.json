@@ -52,7 +52,6 @@
     ]
   },
   "custom": {
-    "fabric-renderer-api-v1:contains_renderer": true,
     "modmenu": {
       "links": {
         "modmenu.donate": "https://caffeinemc.net/donate",
