@@ -58,6 +58,11 @@ configurations {
 
     this["include"].extendsFrom(modIncludeImplementation)
     this["modImplementation"].extendsFrom(modIncludeImplementation)
+    
+    val modIncludeRuntime = create("modIncludeRuntime")
+    
+    this["include"].extendsFrom(modIncludeRuntime)
+    this["modRuntimeOnly"].extendsFrom(modIncludeRuntime)
 }
 
 sourceSets {
@@ -141,7 +146,11 @@ java {
 }
 
 repositories {
-    // curseforge
+    maven("https://api.modrinth.com/maven") {
+        content {
+            includeGroup("maven.modrinth")
+        }
+    }
     maven("https://www.cursemaven.com") {
         content {
             includeGroup("curse.maven")
@@ -150,25 +159,31 @@ repositories {
 }
 
 dependencies {
+    fun fAPIModule(name: String) {
+        "modIncludeImplementation"(fabricApi.module(name, "fabric_version"()))
+    }
+    
     //to change the versions see the gradle.properties file
     "minecraft"("com.mojang:minecraft:${"minecraft_version"()}")
     "mappings"(loom.officialMojangMappings())
     "modImplementation"("net.fabricmc:fabric-loader:${"loader_version"()}")
 
     // Fabric API
-    "modIncludeImplementation"(fabricApi.module("fabric-api-base", "fabric_version"()))
-    "modIncludeImplementation"(fabricApi.module("fabric-block-view-api-v2", "fabric_version"()))
-    "modIncludeImplementation"(fabricApi.module("fabric-rendering-fluids-v1", "fabric_version"()))
-    "modIncludeImplementation"(fabricApi.module("fabric-rendering-data-attachment-v1", "fabric_version"()))
-    "modIncludeImplementation"(fabricApi.module("fabric-resource-loader-v0", "fabric_version"()))
-    "modIncludeImplementation"(fabricApi.module("fabric-renderer-api-v1", "fabric_version"()))
-    "modIncludeImplementation"(fabricApi.module("fabric-renderer-indigo", "fabric_version"()))
+    fAPIModule("fabric-api-base")
+    fAPIModule("fabric-block-view-api-v2")
+    fAPIModule("fabric-rendering-fluids-v1")
+    fAPIModule("fabric-rendering-data-attachment-v1")
+    fAPIModule("fabric-resource-loader-v0")
+    fAPIModule("fabric-renderer-api-v1")
+    fAPIModule("fabric-renderer-indigo")
+
+    // JiJ Zume
+    fAPIModule("fabric-key-binding-api-v1")
+    "modIncludeRuntime"("maven.modrinth:zume:${"zume_version"()}")
 
     // provide mod IDs of former mods/addons
-    "include"(project(":stub:sodium"))
-    runtimeOnly(project(":stub:sodium"))
-    "include"(project(":stub:indium"))
-    runtimeOnly(project(":stub:indium"))
+    "modIncludeRuntime"(project(":stub:sodium"))
+    "modIncludeRuntime"(project(":stub:indium"))
 }
 
 val remapJar = tasks.withType<RemapJarTask>()["remapJar"]!!
