@@ -2,20 +2,24 @@ package me.jellysquid.mods.sodium.client.render.chunk.compile.pipeline;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import me.jellysquid.mods.sodium.client.compat.ccl.SinkingVertexBuilder;
 import me.jellysquid.mods.sodium.client.render.chunk.compile.ChunkBuildBuffers;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.material.DefaultMaterials;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderContext;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import org.joml.Vector3fc;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Adaptation of Indigo's {@link BlockRenderContext} that delegates back to the Sodium renderer.
  */
 public class IndigoBlockRenderContext extends BlockRenderContext {
     private final Map<RenderType, SinkingVertexBuilder> vertexBuilderMap = new Object2ObjectOpenHashMap<>();
+    private final Set<TextureAtlasSprite> usedSprites = new ObjectOpenHashSet<>();
 
     @Override
     protected VertexConsumer getVertexConsumer(RenderType layer) {
@@ -24,6 +28,7 @@ public class IndigoBlockRenderContext extends BlockRenderContext {
 
     public void reset() {
         vertexBuilderMap.values().forEach(SinkingVertexBuilder::reset);
+        usedSprites.clear();
     }
 
     /**
@@ -36,6 +41,7 @@ public class IndigoBlockRenderContext extends BlockRenderContext {
             var material = DefaultMaterials.forRenderLayer(renderType);
             var builder = buffers.get(material);
             sinkingVertexBuilder.flush(builder, material, origin);
+            usedSprites.forEach(builder::addSprite);
         });
     }
 }
