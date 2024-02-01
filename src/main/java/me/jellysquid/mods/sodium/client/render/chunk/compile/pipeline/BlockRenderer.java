@@ -54,7 +54,7 @@ public class BlockRenderer {
     private final boolean useAmbientOcclusion;
     private final boolean useForgeExperimentalLightingPipeline;
 
-    private final net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderContext indigoRenderContext = new net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderContext();
+    private final IndigoBlockRenderContext indigoRenderContext = new IndigoBlockRenderContext();
 
     private final int[] quadColors = new int[4];
 
@@ -113,9 +113,9 @@ public class BlockRenderer {
             } else
                 mStack = EMPTY_STACK;
 
-            sinkingVertexBuilder.reset();
-            indigoRenderContext.render(ctx.localSlice(), ctx.model(), ctx.state(), ctx.pos(), mStack, sinkingVertexBuilder, true, random, ctx.seed(), OverlayTexture.NO_OVERLAY);
-            sinkingVertexBuilder.flush(meshBuilder, material, ctx.origin());
+            indigoRenderContext.reset();
+            indigoRenderContext.render(ctx.localSlice(), ctx.model(), ctx.state(), ctx.pos(), mStack, null, true, random, ctx.seed(), OverlayTexture.NO_OVERLAY);
+            indigoRenderContext.flush(buffers, ctx.origin());
             return;
         }
 
