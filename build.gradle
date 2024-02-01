@@ -132,8 +132,9 @@ dependencies {
     modIncludeImplementation(fabricApi.module("fabric-renderer-api-v1", project.fabric_version))
     modIncludeImplementation(fabricApi.module("fabric-renderer-indigo", project.fabric_version))
 
-    // provide Sodium mod ID
-    include(implementation(project(":stub")))
+    // provide mod IDs of former mods/addons
+    include(runtimeOnly(project(":stub:sodium")))
+    include(runtimeOnly(project(":stub:indium")))
 }
 
 def copyJarNameConsistent = tasks.register('copyJarNameConsistent', Copy) {

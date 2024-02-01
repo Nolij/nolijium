@@ -11,4 +11,5 @@ pluginManagement {
 
 rootProject.name = "nolijium-${getProperty("minecraft_version")}"
 
-include("stub")
+include("stub:sodium")
+include("stub:indium")
