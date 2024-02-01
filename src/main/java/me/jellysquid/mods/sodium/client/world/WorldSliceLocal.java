@@ -1,7 +1,9 @@
 package me.jellysquid.mods.sodium.client.world;
 
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ClipBlockStateContext;
@@ -9,6 +11,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -30,7 +33,7 @@ import java.util.stream.Stream;
  * Wrapper object used to defeat identity comparisons in mods. Since vanilla provides a unique object to them for each
  * subchunk, we do the same.
  */
-public class WorldSliceLocal implements BlockAndTintGetter {
+public class WorldSliceLocal implements BlockAndTintGetter, RenderAttachedBlockView {
     private final BlockAndTintGetter view;
 
     public WorldSliceLocal(BlockAndTintGetter view) {
@@ -186,6 +189,21 @@ public class WorldSliceLocal implements BlockAndTintGetter {
     @Override
     public int getSectionYFromSectionIndex(int index) {
         return view.getSectionYFromSectionIndex(index);
+    }
+
+    @Override
+    public @Nullable Object getBlockEntityRenderData(BlockPos pos) {
+        return view.getBlockEntityRenderData(pos);
+    }
+
+    @Override
+    public boolean hasBiomes() {
+        return view.hasBiomes();
+    }
+
+    @Override
+    public Holder<Biome> getBiomeFabric(BlockPos pos) {
+        return view.getBiomeFabric(pos);
     }
 
     public static LevelHeightAccessor create(int bottomY, int height) {
