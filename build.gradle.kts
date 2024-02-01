@@ -162,6 +162,11 @@ dependencies {
     fun fAPIModule(name: String) {
         "modIncludeImplementation"(fabricApi.module(name, "fabric_version"()))
     }
+
+    fun stub(name: String) {
+        "runtimeOnly"(project(":stub:" + name))
+        "include"(project(":stub:" + name))
+    }
     
     //to change the versions see the gradle.properties file
     "minecraft"("com.mojang:minecraft:${"minecraft_version"()}")
@@ -177,13 +182,13 @@ dependencies {
     fAPIModule("fabric-renderer-api-v1")
     fAPIModule("fabric-renderer-indigo")
 
-    // JiJ Zume
-    fAPIModule("fabric-key-binding-api-v1")
-    "modIncludeRuntime"("maven.modrinth:zume:${"zume_version"()}")
+    // Include Zume in dev
+    modRuntimeOnly(fabricApi.module("fabric-key-binding-api-v1", "fabric_version"()))
+    modRuntimeOnly("maven.modrinth:zume:${"zume_version"()}")
 
     // provide mod IDs of former mods/addons
-    "modIncludeRuntime"(project(":stub:sodium"))
-    "modIncludeRuntime"(project(":stub:indium"))
+    stub("sodium")
+    stub("indium")
 }
 
 val remapJar = tasks.withType<RemapJarTask>()["remapJar"]!!
