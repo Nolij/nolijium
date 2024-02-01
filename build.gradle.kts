@@ -24,8 +24,26 @@ base {
 version = "${"mod_version"()}${getVersionMetadata()}+mc${"minecraft_version"()}"
 group = "maven_group"()
 
-apply(from = "${rootProject.projectDir}/gradle/forge.gradle")
-apply(from = "${rootProject.projectDir}/gradle/java.gradle")
+tasks.processResources {
+    inputs.property("version", project.version)
+
+    filesMatching("fabric.mod.json") {
+        expand("version" to project.version)
+    }
+}
+
+// ensure that the encoding is set to UTF-8, no matter what the system default is
+// this fixes some edge cases with special characters not displaying correctly
+// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
+tasks.withType<JavaCompile> {
+    sourceCompatibility = JavaVersion.VERSION_17.majorVersion
+    targetCompatibility = JavaVersion.VERSION_17.majorVersion
+    options.encoding = "UTF-8"
+}
+
+tasks.jar {
+    from("${rootProject.projectDir}/LICENSE.txt")
+}
 
 loom {
     mixin {
@@ -153,13 +171,13 @@ dependencies {
     runtimeOnly(project(":stub:indium"))
 }
 
-val remapJar = tasks.withType<RemapJarTask>()["remapJar"]
-val remapSourcesJar = tasks.withType<RemapSourcesJarTask>()["remapSourcesJar"]
+val remapJar = tasks.withType<RemapJarTask>()["remapJar"]!!
+val remapSourcesJar = tasks.withType<RemapSourcesJarTask>()["remapSourcesJar"]!!
 
 val copyJarNameConsistent = tasks.register<Copy>("copyJarNameConsistent") {
     from(remapJar) // shortcut for createJar.outputs.files
     into(project.file("build/libs"))
-    rename { name -> "embeddium-latest.jar" }
+    rename { "nolijium-latest.jar" }
 }
 
 val copyJarToBin = tasks.register<Copy>("copyJarToBin") {
@@ -182,10 +200,9 @@ tasks.build {
 
 publishMods {
 	file = remapJar.archiveFile
-	changelog = "https://github.com/embeddedt/embeddium/wiki/Changelog"
+	changelog = "https://github.com/Nolij/nolijium/wiki/Changelog"
 	type = STABLE
-    modLoaders.add("forge")
-    modLoaders.add("neoforge")
+    modLoaders.add("fabric")
 
 	curseforge {
 		projectId = "908741"
@@ -193,7 +210,10 @@ publishMods {
 		minecraftVersions.add("minecraft_version"())
 
 		incompatible {
-			slug = "rubidium"
+			slug = "sodium"
+		}
+		incompatible {
+			slug = "indium"
 		}
 	}
 	modrinth {
@@ -202,11 +222,14 @@ publishMods {
 		minecraftVersions.add("minecraft_version"())
 
 		incompatible {
-			slug = "rubidium"
+			slug = "sodium"
 		}
+        incompatible {
+            slug = "indium"
+        }
 	}
 
-	displayName = "[${"minecraft_version"()}] Embeddium ${"mod_version"()}"
+	displayName = "[${"minecraft_version"()}] Nolijium ${"mod_version"()}"
 }
 
 fun getVersionMetadata(): String {
@@ -215,18 +238,13 @@ fun getVersionMetadata(): String {
 		return "" // no tag whatsoever
 	}
 
-	if (grgit != null) {
-		val head = grgit.head()
-		var id = head.abbreviatedId
+    val head = grgit.head()
+    var id = head.abbreviatedId
 
-		// Flag the build if the build tree is not clean
-		if (!grgit.status().isClean) {
-			id += ".dirty"
-		}
+    // Flag the build if the build tree is not clean
+    if (!grgit.status().isClean) {
+        id += ".dirty"
+    }
 
-		return "-git.${id}"
-	}
-
-	// No tracking information could be found about the build
-	return "-unknown"
+    return "-git.${id}"
 }
