@@ -159,13 +159,13 @@ repositories {
 }
 
 dependencies {
-    fun fAPIModule(name: String) {
-        "modIncludeImplementation"(fabricApi.module(name, "fabric_version"()))
+    fun fAPIModule(name: String): Dependency {
+        return fabricApi.module(name, "fabric_version"())
     }
 
     fun stub(name: String) {
-        "runtimeOnly"(project(":stub:" + name))
-        "include"(project(":stub:" + name))
+        "runtimeOnly"(project(":stub:${name}"))
+        "include"(project(":stub:${name}"))
     }
     
     //to change the versions see the gradle.properties file
@@ -174,16 +174,16 @@ dependencies {
     "modImplementation"("net.fabricmc:fabric-loader:${"loader_version"()}")
 
     // Fabric API
-    fAPIModule("fabric-api-base")
-    fAPIModule("fabric-block-view-api-v2")
-    fAPIModule("fabric-rendering-fluids-v1")
-    fAPIModule("fabric-rendering-data-attachment-v1")
-    fAPIModule("fabric-resource-loader-v0")
-    fAPIModule("fabric-renderer-api-v1")
-    fAPIModule("fabric-renderer-indigo")
+    "modIncludeImplementation"(fAPIModule("fabric-api-base"))
+    "modIncludeImplementation"(fAPIModule("fabric-block-view-api-v2"))
+    "modIncludeImplementation"(fAPIModule("fabric-rendering-fluids-v1"))
+    "modIncludeImplementation"(fAPIModule("fabric-rendering-data-attachment-v1"))
+    "modIncludeImplementation"(fAPIModule("fabric-resource-loader-v0"))
+    "modIncludeImplementation"(fAPIModule("fabric-renderer-api-v1"))
+    "modIncludeImplementation"(fAPIModule("fabric-renderer-indigo"))
 
     // Include Zume in dev
-    modRuntimeOnly(fabricApi.module("fabric-key-binding-api-v1", "fabric_version"()))
+    modRuntimeOnly(fAPIModule("fabric-key-binding-api-v1"))
     modRuntimeOnly("maven.modrinth:zume:${"zume_version"()}")
 
     // provide mod IDs of former mods/addons
