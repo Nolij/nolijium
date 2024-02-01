@@ -8,7 +8,9 @@ import me.jellysquid.mods.sodium.client.render.chunk.vertex.format.ChunkVertexEn
 import me.jellysquid.mods.sodium.client.util.DirectionUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
+import org.embeddedt.embeddium.render.frapi.SpriteFinderCache;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3fc;
 
@@ -18,8 +20,8 @@ import java.nio.ByteOrder;
 import java.util.Arrays;
 
 /**
- * A allocation-free {@link IVertexBuilder} implementation
- * which pipes vertices into a {@link ModelVertexSink}.
+ * A allocation-free {@link VertexConsumer} implementation
+ * which pipes vertices into a {@link ChunkModelBuilder}.
  *
  * @author KitsuneAlex
  */
@@ -174,6 +176,8 @@ public final class SinkingVertexBuilder implements VertexConsumer {
 
             ChunkVertexEncoder.Vertex[] sodiumQuad = sodiumVertexArray;
 
+            float midU = 0, midV = 0;
+
             for(int i = 0; i < 4; i++) {
                 if(i != 0)
                     buffer.getInt(); // read normal
@@ -184,8 +188,17 @@ public final class SinkingVertexBuilder implements VertexConsumer {
                 sodiumVertex.z = oZ + buffer.getFloat();
                 sodiumVertex.u = buffer.getFloat();
                 sodiumVertex.v = buffer.getFloat();
+                midU += sodiumVertex.u;
+                midV += sodiumVertex.v;
                 sodiumVertex.color = buffer.getInt();
                 sodiumVertex.light = buffer.getInt();
+            }
+
+            // Detect sprite
+            TextureAtlasSprite sprite = SpriteFinderCache.forBlockAtlas().find(midU / 4, midV / 4);
+
+            if(sprite != null) {
+                buffers.addSprite(sprite);
             }
 
             sink.push(sodiumQuad, material);
