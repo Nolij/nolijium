@@ -164,14 +164,14 @@ dependencies {
     }
 
     fun stub(name: String) {
-        "runtimeOnly"(project(":stub:${name}"))
-        "include"(project(":stub:${name}"))
+        runtimeOnly(project(":stub:${name}"))
+        include(project(":stub:${name}"))
     }
     
     //to change the versions see the gradle.properties file
-    "minecraft"("com.mojang:minecraft:${"minecraft_version"()}")
-    "mappings"(loom.officialMojangMappings())
-    "modImplementation"("net.fabricmc:fabric-loader:${"loader_version"()}")
+    minecraft("com.mojang:minecraft:${"minecraft_version"()}")
+    mappings(loom.officialMojangMappings())
+    modImplementation("net.fabricmc:fabric-loader:${"loader_version"()}")
 
     // Fabric API
     "modIncludeImplementation"(fAPIModule("fabric-api-base"))
